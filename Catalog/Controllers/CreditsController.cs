@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Catalog.Data;
 using Catalog.Entities;
+using Catalog.Models;
 
 namespace Catalog.Controllers
 {
@@ -20,10 +21,15 @@ namespace Catalog.Controllers
         }
 
         // GET: Credits
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? group)
         {
-              return _context.Credits != null ? 
-                          View(await _context.Credits.ToListAsync()) :
+            //var categ= _context.Categories.ToList();
+            ViewBag.categories = _context.Categories.ToList();
+            var creditsFiltered = _context.Credits.Where(d => !group.HasValue || d.CategoryId == group.Value); ;
+
+            return _context.Credits != null ?
+                View(creditsFiltered) :
+                          //View(await _context.Credits.ToListAsync()) :
                           Problem("Entity set 'ApplicationDbContext.Credits'  is null.");
         }
 
