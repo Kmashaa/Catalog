@@ -7,7 +7,8 @@
     var categories = ViewBag.categories as IEnumerable<Catalog.Entities.Category>;
 
 }
-
+<div-- class="row">
+    <div class="col-2">
 
 <div class="dropdown">
     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -27,8 +28,41 @@
     </ul>
 </div>
 
+<form asp-action="Index">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <br />
+    <div class="form-group">
+        <label  class="control-label">Min percents</label>
+        <input  name="minPercents" style="width=50px" />
+                <span class="text-danger" style="width=40px"></span>
+    </div>
+    <br />
+    <div class="form-group">
+        <label class="control-label">Max percents</label>
+        <input  name="maxPercents" />
+                <span class="text-danger" ></span>
+    </div>
+    <br />
+    <div class="form-group">
+        <label class="control-label">Min month</label>
+        <input name="minMonth" style="width=60px" />
+                <span class="text-danger" style="width=60px"></span>
+    </div>
+    <br />
+    <div class="form-group">
+        <label class="control-label">Max month</label>
+        <input name="maxMonth" style="width=70px" />
+                <span class="text-danger" style="width=70px"></span>
+    </div>
+    <br />
 
-
+    <div class="form-group">
+        <input type="submit" value="Filter" class="btn btn-primary" />
+    </div>
+</form>
+</div>
+    <div class="col-1"></div>
+<div class="col-9">
 <h1>Credits</h1>
 
 @if (User.IsInRole("employee")){
@@ -49,14 +83,17 @@
                 @Html.DisplayNameFor(model => model.Months)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CategoryId)
+                Category
+                @*@Html.DisplayNameFor(model => model.CategoryId)*@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.GeneralNote)
             </th>
+            @if (User.IsInRole("employee") || User.IsInRole("admin")){
             <th>
                 @Html.DisplayNameFor(model => model.SpecialNote)
             </th>
+             }
             <th></th>
         </tr>
     </thead>
@@ -73,7 +110,8 @@
                 @Html.DisplayFor(modelItem => item.Months)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CategoryId)
+                    @categories.Where(categories => categories.Id == item.CategoryId).FirstOrDefault().Name
+                @*@Html.DisplayFor(modelItem => item.CategoryId)*@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.GeneralNote)
@@ -106,3 +144,4 @@
 }
     </tbody>
 </table>
+</div>

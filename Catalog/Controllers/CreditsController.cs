@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Catalog.Data;
 using Catalog.Entities;
 using Catalog.Models;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace Catalog.Controllers
 {
@@ -20,12 +21,41 @@ namespace Catalog.Controllers
             _context = context;
         }
 
+
+        private static int? gr=0;
+
         // GET: Credits
-        public async Task<IActionResult> Index(int? group)
+        public async Task<IActionResult> Index(int? group, int? minPercents, int? maxPercents, int? minMonth, int? maxMonth)
         {
+            if (group != null)
+            {
+                gr = group;
+            }
+
+            //var minimum = minPercents;
+            //var maximum = maxPercents;
             //var categ= _context.Categories.ToList();
             ViewBag.categories = _context.Categories.ToList();
-            var creditsFiltered = _context.Credits.Where(d => !group.HasValue || d.CategoryId == group.Value); ;
+            var creditsFiltered = _context.Credits.Where(d => !group.HasValue || d.CategoryId == gr.Value);
+            if (maxPercents != null)
+            {
+                creditsFiltered = creditsFiltered.Where(d => d.Percents <= maxPercents);
+            }
+
+            if (minPercents != null)
+            {
+                creditsFiltered = creditsFiltered.Where(d => d.Percents >= minPercents);
+            }
+
+            if (maxMonth != null)
+            {
+                creditsFiltered = creditsFiltered.Where(d => d.Months <= maxMonth);
+            }
+
+            if (minPercents != null)
+            {
+                creditsFiltered = creditsFiltered.Where(d => d.Months >= minMonth);
+            }
 
             return _context.Credits != null ?
                 View(creditsFiltered) :
@@ -36,6 +66,8 @@ namespace Catalog.Controllers
         // GET: Credits/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            ViewBag.categories = _context.Categories.ToList();
+
             if (id == null || _context.Credits == null)
             {
                 return NotFound();
@@ -54,6 +86,7 @@ namespace Catalog.Controllers
         // GET: Credits/Create
         public IActionResult Create()
         {
+            ViewBag.categories = _context.Categories.ToList();
             return View();
         }
 
@@ -62,8 +95,10 @@ namespace Catalog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Percents,CategoryId")] Credit credit)
+        public async Task<IActionResult> Create([Bind("Id,Name,Percents,Months,CategoryId,GeneralNote,SpecialNote")] Credit credit)
         {
+            ViewBag.categories = _context.Categories.ToList();
+
             if (ModelState.IsValid)
             {
                 _context.Add(credit);
