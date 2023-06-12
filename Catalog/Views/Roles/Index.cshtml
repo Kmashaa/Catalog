@@ -2,8 +2,7 @@
 
 <h2>Список ролей</h2>
 <table class="table">
-    @foreach (var role in Model)
-    {
+    @{foreach (var role in Model){
         <tr>
             <td>@role.Name</td>
             <td>
@@ -14,7 +13,8 @@
                 </form>
             </td>
         </tr>
+        }
     }
-</table>
+        </table>
 <a asp-action="Create">Добавить роль</a>
 <a asp-action="UserList">Список пользователей</a>

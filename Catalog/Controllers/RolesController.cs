@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Catalog.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace Catalog.Controllers
 {
@@ -17,9 +19,16 @@ namespace Catalog.Controllers
             _roleManager = roleManager;
             _userManager = userManager;
         }
+
+        [Authorize(Roles = "admin")]
         public IActionResult Index() => View(_roleManager.Roles.ToList());
 
+
+        [Authorize(Roles = "admin")]
         public IActionResult Create() => View();
+
+
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> Create(string name)
         {
@@ -41,6 +50,8 @@ namespace Catalog.Controllers
             return View(name);
         }
 
+
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
@@ -52,8 +63,11 @@ namespace Catalog.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "admin")]
         public IActionResult UserList() => View(_userManager.Users.ToList());
 
+
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(string userId)
         {
             // получаем пользователя
@@ -75,6 +89,9 @@ namespace Catalog.Controllers
 
             return NotFound();
         }
+
+
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> Edit(string userId, List<string> roles)
         {

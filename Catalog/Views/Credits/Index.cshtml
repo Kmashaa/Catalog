@@ -27,11 +27,15 @@
     </ul>
 </div>
 
+
+
 <h1>Credits</h1>
 
-<p>
-    <a asp-action="Create">Create New credit <small>(only for employee)</small></a>
+@if (User.IsInRole("employee")){
+    <p>
+    <a asp-action="Create">Create New credit</a>
 </p>
+}
 <table class="table">
     <thead>
         <tr>
@@ -42,7 +46,16 @@
                 @Html.DisplayNameFor(model => model.Percents)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Months)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.CategoryId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GeneralNote)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SpecialNote)
             </th>
             <th></th>
         </tr>
@@ -57,24 +70,38 @@
                 @Html.DisplayFor(modelItem => item.Percents)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Months)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.CategoryId)
             </td>
             <td>
-                <a asp-action="Add"
+                @Html.DisplayFor(modelItem => item.GeneralNote)
+            </td>
+                @if (User.IsInRole("employee") || User.IsInRole("admin"))
+                {
+            <td>
+                @Html.DisplayFor(modelItem => item.SpecialNote)
+            </td>
+                }
+                @if (!User.IsInRole("employee") && !User.IsInRole("admin") && User.Identity.IsAuthenticated)
+                {
+                    <td>
+                        <a asp-action="Add"
                asp-controller="Credits"
                asp-route-id="@item.Id"
                asp-route-returnUrl="@returnUrl"
                class="btn btn-primary">
                     <i class="fa fa-shopping-cart"></i> В корзину
                 </a>
-                </td>
+                </td>}
+                @if (User.IsInRole("employee")){
             <td>
-
-
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit <small>(only for employee)</small></a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details <small>(only for employee)</small></a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete <small>(only for employee)</small></a>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
+                }
         </tr>
 }
     </tbody>

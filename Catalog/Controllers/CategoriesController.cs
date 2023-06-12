@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Catalog.Data;
 using Catalog.Entities;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace Catalog.Controllers
 {
@@ -19,6 +21,8 @@ namespace Catalog.Controllers
             _context = context;
         }
 
+
+        //[Authorize(Roles = "admin")]
         // GET: Categories
         public async Task<IActionResult> Index()
         {
@@ -27,6 +31,8 @@ namespace Catalog.Controllers
                           Problem("Entity set 'ApplicationDbContext.Categories'  is null.");
         }
 
+
+        //[Authorize(Roles = "admin")]
         // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -45,6 +51,8 @@ namespace Catalog.Controllers
             return View(category);
         }
 
+
+        [Authorize(Roles = "admin")]
         // GET: Categories/Create
         public IActionResult Create()
         {
@@ -54,6 +62,9 @@ namespace Catalog.Controllers
         // POST: Categories/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
@@ -67,6 +78,8 @@ namespace Catalog.Controllers
             return View(category);
         }
 
+
+        [Authorize(Roles = "admin")]
         // GET: Categories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -86,6 +99,7 @@ namespace Catalog.Controllers
         // POST: Categories/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Category category)
@@ -118,6 +132,8 @@ namespace Catalog.Controllers
             return View(category);
         }
 
+
+        [Authorize(Roles = "admin")]
         // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -137,6 +153,7 @@ namespace Catalog.Controllers
         }
 
         // POST: Categories/Delete/5
+        [Authorize(Roles = "admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -155,6 +172,8 @@ namespace Catalog.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+        [Authorize(Roles = "admin")]
         private bool CategoryExists(int id)
         {
           return (_context.Categories?.Any(e => e.Id == id)).GetValueOrDefault();
