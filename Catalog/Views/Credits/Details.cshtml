@@ -11,23 +11,48 @@
     <h4>Credit</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Percents)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Percents)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Months)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Months)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Percents)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Percents)
+        </dd>
+        <dt class="col-sm-2">
             Category
         </dt>
-        <dd class = "col-sm-10">
-           @categories.Where(categories => categories.Id == Model.CategoryId).FirstOrDefault().Name
+        <dd class="col-sm-10">
+            @categories.Where(categories => categories.Id == Model.CategoryId).FirstOrDefault().Name
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.GeneralNote)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GeneralNote)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SpecialNote)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SpecialNote)
         </dd>
     </dl>
 </div>

@@ -20,14 +20,18 @@ namespace Catalog.Controllers
         }
         public IActionResult Index()
         {
+            ViewBag.categories = _context.Categories.ToList();
+
             //_cart = HttpContext.Session.Get<Cart>("cart");
             return View(_cart.Items.Values.ToList());
         }
 
 
-        //[Authorize]
+        [Authorize]
         public IActionResult Add(int id, string returnUrl)
         {
+            ViewBag.categories = _context.Categories.ToList();
+
             //_cart = HttpContext.Session.Get<Cart>("cart");
             var item = _context.Credits.Find(id);
             if (item != null)
@@ -40,6 +44,8 @@ namespace Catalog.Controllers
 
         public IActionResult Delete(int id)
         {
+            ViewBag.categories = _context.Categories.ToList();
+
             //_cart = HttpContext.Session.Get<Cart>("cart");
             _cart.RemoveFromCart(id);
             //HttpContext.Session.Set<Cart>("cart", _cart);

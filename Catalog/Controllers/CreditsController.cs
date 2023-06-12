@@ -111,6 +111,8 @@ namespace Catalog.Controllers
         // GET: Credits/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            ViewBag.categories = _context.Categories.ToList();
+
             if (id == null || _context.Credits == null)
             {
                 return NotFound();
@@ -131,6 +133,8 @@ namespace Catalog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Percents,CategoryId")] Credit credit)
         {
+            ViewBag.categories = _context.Categories.ToList();
+
             if (id != credit.Id)
             {
                 return NotFound();
@@ -162,6 +166,7 @@ namespace Catalog.Controllers
         // GET: Credits/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            ViewBag.categories = _context.Categories.ToList();
             if (id == null || _context.Credits == null)
             {
                 return NotFound();
@@ -182,6 +187,8 @@ namespace Catalog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            ViewBag.categories = _context.Categories.ToList();
+
             if (_context.Credits == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.Credits'  is null.");

@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Cart";
+    var categories = ViewBag.categories as IEnumerable<Catalog.Entities.Category>;
+
 }
 
 <h1>Ваша корзина</h1>
@@ -42,7 +44,7 @@
                     <label>@item.Dish.Months</label>
                 </td>
                 <td>
-                    <label>@item.Dish.CategoryId</label>
+                    <label>@categories.Where(categories => categories.Id == item.Dish.CategoryId).FirstOrDefault().Name</label>
                 </td>
                 <td>
                     <label>@item.Dish.GeneralNote</label>

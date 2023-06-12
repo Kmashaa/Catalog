@@ -121,25 +121,25 @@
             <td>
                 @Html.DisplayFor(modelItem => item.SpecialNote)
             </td>
-                }
-                @if (!User.IsInRole("employee") && !User.IsInRole("admin") && User.Identity.IsAuthenticated)
-                {
-                    <td>
-                        <a asp-action="Add"
-               asp-controller="Cart"
-               asp-route-id="@item.Id"
-               asp-route-returnUrl="@returnUrl"
-               class="btn btn-primary">
-                    <i class="fa fa-shopping-cart"></i> В корзину
-                </a>
-                </td>}
-                @if (User.IsInRole("employee")){
+            }
+            @if (!User.IsInRole("employee") && !User.IsInRole("admin") && User.Identity.IsAuthenticated)
+            {
+                <td>
+                    <a asp-action="Add"
+            asp-controller="Cart"
+            asp-route-id="@item.Id"
+            asp-route-returnUrl="@returnUrl"
+            class="btn btn-primary">
+                <i class="fa fa-shopping-cart"></i> В корзину
+            </a>
+            </td>}
+            @if (User.IsInRole("employee")){
             <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
-                }
+            }
         </tr>
 }
     </tbody>
