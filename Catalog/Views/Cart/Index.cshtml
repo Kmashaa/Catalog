@@ -1,0 +1,59 @@
+﻿@model List<Catalog.Models.CartItem>
+
+@{
+    ViewData["Title"] = "Cart";
+}
+
+<h1>Ваша корзина</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Percents
+            </th>
+            <th>
+                Months
+            </th>
+            <th>
+                Category
+            </th>
+            <th>
+                GeneralNote
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <label>@item.Dish.Name</label>
+                </td>
+                <td>
+                    <label>@item.Dish.Percents</label>
+                </td>
+                <td>
+                    <label>@item.Dish.Months</label>
+                </td>
+                <td>
+                    <label>@item.Dish.CategoryId</label>
+                </td>
+                <td>
+                    <label>@item.Dish.GeneralNote</label>
+                </td>
+
+                <td>
+                    <a 
+                   asp-action="delete" asp-controller="Cart"
+                   asp-route-id="@item.Dish.Id"><i class="fa fa-close"></i> delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
