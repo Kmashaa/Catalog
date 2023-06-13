@@ -133,6 +133,9 @@
                 <i class="fa fa-shopping-cart"></i> В корзину
             </a>
             </td>}
+            <td>
+                <a asp-action="Calculator" asp-route-id="@item.Id">Calculator</a>
+                </td>
             @if (User.IsInRole("employee")){
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

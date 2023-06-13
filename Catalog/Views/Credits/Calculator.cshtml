@@ -1,0 +1,44 @@
+﻿@model Catalog.Entities.Credit
+
+<h1>Calculator</h1>
+
+
+<hr />
+<dl class="row">
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Name)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Name)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Percents)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Percents)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Months)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Months)
+    </dd>
+
+<form asp-action="Calc">
+    <br />
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Percents" />
+        <input type="hidden" asp-for="Months" />
+    <div class="form-group">
+        <label class="control-label">
+            You are taking:
+        </label>
+        <input name="sum" style="width=50px" />
+        <span class="text-danger" style="width=40px"></span>
+    </div>
+    <br />
+
+    <div class="form-group">
+        <input type="submit" value="Calculator" class="btn btn-primary" />
+    </div>
+</form>

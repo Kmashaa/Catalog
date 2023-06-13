@@ -108,6 +108,24 @@ namespace Catalog.Controllers
             return View(credit);
         }
 
+
+        public async Task<IActionResult> Calculator(int? id)
+        {
+            var credit = await _context.Credits.FindAsync(id);
+            return View(credit);
+        }
+
+        public async Task<IActionResult> Calc(int? id, int? percents, int? months, int? sum)
+        {
+            double percentsPerMonth = (double)((double)percents / (100 * 12));
+            var Pen = sum * (percentsPerMonth / (1 - Math.Pow(1 + percentsPerMonth, (int)months * (-1))));
+            var totalOverpayment = Pen * months;
+            var total = totalOverpayment + sum;
+            List<double> tmp = new List<double>() { Math.Round((double)Pen,2),  Math.Round((double)totalOverpayment,2), Math.Round((double)total, 2) };
+            return View(tmp);
+        }
+
+
         // GET: Credits/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

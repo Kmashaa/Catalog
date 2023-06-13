@@ -1,0 +1,25 @@
+﻿@model List<double>
+
+<h1>Result</h1>
+<br />
+
+<dl class="row">
+    <dt class="col-sm-2">
+        Month overpayment
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model[0])
+    </dd>
+    <dt class="col-sm-2">
+        Total overpayment
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model[1])
+    </dd>
+    <dt class="col-sm-2">
+        Total sum
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model[2])
+    </dd>
+</dl>
