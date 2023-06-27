@@ -43,6 +43,15 @@ namespace Catalog.Controllers
 
             var category = await _context.Categories
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+            var logg = new Catalog.Entities.Logg();
+            logg.Operation = "select";
+            logg.UserId = _context.Users.Where(d => d.UserName == User.Identity.Name).ToList()[0].Id;
+            logg.Date = DateTime.Now.ToString();
+            logg.Table = "Categories";
+            _context.Add(logg);
+            await _context.SaveChangesAsync();
+
             if (category == null)
             {
                 return NotFound();
@@ -73,6 +82,15 @@ namespace Catalog.Controllers
             {
                 _context.Add(category);
                 await _context.SaveChangesAsync();
+
+                var logg = new Catalog.Entities.Logg();
+                logg.Operation = "insert";
+                logg.UserId = _context.Users.Where(d => d.UserName == User.Identity.Name).ToList()[0].Id;
+                logg.Date = DateTime.Now.ToString();
+                logg.Table = "Categories";
+                _context.Add(logg);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -89,6 +107,14 @@ namespace Catalog.Controllers
             }
 
             var category = await _context.Categories.FindAsync(id);
+
+            var logg = new Catalog.Entities.Logg();
+            logg.Operation = "select";
+            logg.UserId = _context.Users.Where(d => d.UserName == User.Identity.Name).ToList()[0].Id;
+            logg.Date = DateTime.Now.ToString();
+            logg.Table = "Categories";
+            _context.Add(logg);
+            await _context.SaveChangesAsync();
             if (category == null)
             {
                 return NotFound();
@@ -114,6 +140,14 @@ namespace Catalog.Controllers
                 try
                 {
                     _context.Update(category);
+                    await _context.SaveChangesAsync();
+
+                    var logg = new Catalog.Entities.Logg();
+                    logg.Operation = "uodate";
+                    logg.UserId = _context.Users.Where(d => d.UserName == User.Identity.Name).ToList()[0].Id;
+                    logg.Date = DateTime.Now.ToString();
+                    logg.Table = "Categories";
+                    _context.Add(logg);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -144,6 +178,15 @@ namespace Catalog.Controllers
 
             var category = await _context.Categories
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+            var logg = new Catalog.Entities.Logg();
+            logg.Operation = "select";
+            logg.UserId = _context.Users.Where(d => d.UserName == User.Identity.Name).ToList()[0].Id;
+            logg.Date = DateTime.Now.ToString();
+            logg.Table = "Categories";
+            _context.Add(logg);
+            await _context.SaveChangesAsync();
+
             if (category == null)
             {
                 return NotFound();
@@ -166,6 +209,14 @@ namespace Catalog.Controllers
             if (category != null)
             {
                 _context.Categories.Remove(category);
+                var logg = new Catalog.Entities.Logg();
+                logg.Operation = "delete";
+                logg.UserId = _context.Users.Where(d => d.UserName == User.Identity.Name).ToList()[0].Id;
+                logg.Date = DateTime.Now.ToString();
+                logg.Table = "Categories";
+                _context.Add(logg);
+                await _context.SaveChangesAsync();
+
             }
             
             await _context.SaveChangesAsync();

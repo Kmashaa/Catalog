@@ -52,10 +52,31 @@ namespace Catalog.Controllers
                 creditsFiltered = creditsFiltered.Where(d => d.Months <= maxMonth);
             }
 
-            if (minPercents != null)
+            if (minMonth != null)
             {
                 creditsFiltered = creditsFiltered.Where(d => d.Months >= minMonth);
             }
+
+
+
+            //var param = new Microsoft.Data.SqlClient.SqlParameter
+            //{
+            //    ParameterName = "@userName",
+            //    SqlDbType = System.Data.SqlDbType.VarChar,
+            //    Direction = System.Data.ParameterDirection.Output,
+            //    Size = 50
+            //};
+            //_context.Database.ExecuteSqlRaw("GetCredits @userName OUT");
+            //Console.WriteLine(param.Value);
+            //var user = _context.Users.Where(d => d.UserName == User.Identity.Name).ToList();
+
+            var logg = new Catalog.Entities.Logg();
+            logg.Operation = "select";
+            logg.UserId = _context.Users.Where(d => d.UserName == User.Identity.Name).ToList()[0].Id;
+            logg.Date = DateTime.Now.ToString();
+            logg.Table = "Credits";
+            _context.Add(logg);
+            await _context.SaveChangesAsync();
 
             return _context.Credits != null ?
                 View(creditsFiltered) :
@@ -75,6 +96,15 @@ namespace Catalog.Controllers
 
             var credit = await _context.Credits
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+            var logg = new Catalog.Entities.Logg();
+            logg.Operation = "select";
+            logg.UserId = _context.Users.Where(d => d.UserName == User.Identity.Name).ToList()[0].Id;
+            logg.Date = DateTime.Now.ToString();
+            logg.Table = "Credits";
+            _context.Add(logg);
+            await _context.SaveChangesAsync();
+
             if (credit == null)
             {
                 return NotFound();
@@ -103,6 +133,15 @@ namespace Catalog.Controllers
             {
                 _context.Add(credit);
                 await _context.SaveChangesAsync();
+
+                var logg = new Catalog.Entities.Logg();
+                logg.Operation = "insert";
+                logg.UserId = _context.Users.Where(d => d.UserName == User.Identity.Name).ToList()[0].Id;
+                logg.Date = DateTime.Now.ToString();
+                logg.Table = "Credits";
+                _context.Add(logg);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(credit);
@@ -112,6 +151,15 @@ namespace Catalog.Controllers
         public async Task<IActionResult> Calculator(int? id)
         {
             var credit = await _context.Credits.FindAsync(id);
+
+            var logg = new Catalog.Entities.Logg();
+            logg.Operation = "select";
+            logg.UserId = _context.Users.Where(d => d.UserName == User.Identity.Name).ToList()[0].Id;
+            logg.Date = DateTime.Now.ToString();
+            logg.Table = "Credits";
+            _context.Add(logg);
+            await _context.SaveChangesAsync();
+
             return View(credit);
         }
 
@@ -130,6 +178,14 @@ namespace Catalog.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             ViewBag.categories = _context.Categories.ToList();
+
+            var logg = new Catalog.Entities.Logg();
+            logg.Operation = "select";
+            logg.UserId = _context.Users.Where(d => d.UserName == User.Identity.Name).ToList()[0].Id;
+            logg.Date = DateTime.Now.ToString();
+            logg.Table = "Credits";
+            _context.Add(logg);
+            await _context.SaveChangesAsync();
 
             if (id == null || _context.Credits == null)
             {
@@ -164,6 +220,14 @@ namespace Catalog.Controllers
                 {
                     _context.Update(credit);
                     await _context.SaveChangesAsync();
+
+                    var logg = new Catalog.Entities.Logg();
+                    logg.Operation = "update";
+                    logg.UserId = _context.Users.Where(d => d.UserName == User.Identity.Name).ToList()[0].Id;
+                    logg.Date = DateTime.Now.ToString();
+                    logg.Table = "Credits";
+                    _context.Add(logg);
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -192,6 +256,15 @@ namespace Catalog.Controllers
 
             var credit = await _context.Credits
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+            var logg = new Catalog.Entities.Logg();
+            logg.Operation = "select";
+            logg.UserId = _context.Users.Where(d => d.UserName == User.Identity.Name).ToList()[0].Id;
+            logg.Date = DateTime.Now.ToString();
+            logg.Table = "Credits";
+            _context.Add(logg);
+            await _context.SaveChangesAsync();
+
             if (credit == null)
             {
                 return NotFound();
@@ -215,6 +288,14 @@ namespace Catalog.Controllers
             if (credit != null)
             {
                 _context.Credits.Remove(credit);
+
+                var logg = new Catalog.Entities.Logg();
+                logg.Operation = "delete";
+                logg.UserId = _context.Users.Where(d => d.UserName == User.Identity.Name).ToList()[0].Id;
+                logg.Date = DateTime.Now.ToString();
+                logg.Table = "Credits";
+                _context.Add(logg);
+                await _context.SaveChangesAsync();
             }
             
             await _context.SaveChangesAsync();

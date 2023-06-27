@@ -21,7 +21,6 @@ namespace Catalog.Controllers
         public IActionResult Index()
         {
             ViewBag.categories = _context.Categories.ToList();
-
             //_cart = HttpContext.Session.Get<Cart>("cart");
             return View(_cart.Items.Values.ToList());
         }

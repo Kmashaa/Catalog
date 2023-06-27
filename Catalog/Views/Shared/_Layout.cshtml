@@ -1,4 +1,12 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using Catalog.Entities
+@using Catalog.Controllers
+@using Catalog.Data
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext Context
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -32,15 +40,25 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
                         </li>
-                        <li>
-                            <a class="nav-link text-dark" asp-controller="Cart" asp-action="Index">Cart</a>
-                        </li>
-                        @if (User.IsInRole("admin"))
+@*                        @if (SignInManager.IsSignedIn(User))
+                        {  <li>
+                                <a class="nav-link text-dark" asp-controller="Cart" asp-action="Index">Cart</a>
+                            </li>
+                        }*@
+                        @*user*@
+                        
+                        @if (new AccountController(UserManager, SignInManager, Context).CheckRole(User.Identity.Name) == "2")
+                            {
+                            <li>
+                                <a class="nav-link text-dark" asp-controller="Cart" asp-action="Index">Cart</a>
+                            </li>
+                            }
+@*                        @if (User.Claims.)
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
                             </li>
-                        }
+                        }*@
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
