@@ -1,0 +1,85 @@
+Этот JavaScript-код фильтрует элементы `<details>` на основе критерия поиска, при этом не скрывая ни дочерние, ни родительские элементы найденного элемента. Код предполагает, что критерий поиска передается в функцию в виде строки.
+
+
+function filterDetails(searchQuery) {
+  const detailsElements = document.querySelectorAll('details');
+
+  detailsElements.forEach(details => {
+    const summary = details.querySelector('summary');
+    const content = details.querySelector('div') || details; // Обработка случая, если нет <div> внутри <details>
+
+    // Преобразование searchQuery в нижний регистр для нечувствительного к регистру поиска
+    const lowerCaseQuery = searchQuery.toLowerCase();
+
+    // Проверка наличия searchQuery в тексте summary и content
+    const summaryText = summary.textContent.toLowerCase();
+    const contentText = content.textContent.toLowerCase();
+
+    const isMatch = summaryText.includes(lowerCaseQuery) || contentText.includes(lowerCaseQuery);
+
+    if (isMatch) {
+      details.open = true; // Открыть details, если найден матч
+    } else {
+      details.open = false; // Закрыть details, если матч не найден
+    }
+
+    // Показ/скрытие только содержимого <details>, а не всего элемента
+    const elementsToHide = content.querySelectorAll('*');
+
+    elementsToHide.forEach(element => {
+        if (!element.textContent.toLowerCase().includes(lowerCaseQuery)){
+            element.style.display = 'none';
+        } else {
+            element.style.display = 'block'; // Или любой стиль по умолчанию
+        }
+    })
+
+  });
+}
+
+
+// Пример использования:
+const searchInput = document.getElementById('searchInput'); // Предполагается, что у вас есть input с id="searchInput"
+
+searchInput.addEventListener('input', () => {
+  const searchQuery = searchInput.value;
+  filterDetails(searchQuery);
+});
+
+
+HTML структура (пример):
+
+<input type="text" id="searchInput" placeholder="Введите поисковый запрос">
+
+<details>
+  <summary>Заголовок 1</summary>
+  <div>
+    <p>Текст 1. Это тестовый текст, который может содержать поисковый запрос.</p>
+    <p>Текст 2. Другой текст.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Заголовок 2</summary>
+  <p>Текст 3. Еще один текст.</p>
+</details>
+
+
+Пояснения:
+
+1. `filterDetails(searchQuery)`: Функция принимает строку `searchQuery` в качестве аргумента.
+2. `document.querySelectorAll('details')`: Выбирает все элементы `<details>` на странице.
+3. `details.open = true/false`: Открывает или закрывает элемент `<details>`. В данном коде мы открываем `<details>`, если найден матч, чтобы пользователь мог видеть результаты.
+4. toLowerCase(): Приводит строки к нижнему регистру для нечувствительного к регистру поиска.
+5. includes(): Проверяет, содержит ли строка подстроку.
+6. Обработка без <div> внутри <details>: Код корректно работает даже если внутри `details` нет `<div>`.
+
+
+Для использования:
+
+1. Добавьте этот JavaScript-код в ваш HTML-файл (желательно в `<script>` тег в конце `<body>` или в отдельном `.js` файле, который затем подключите).
+2. Добавьте `<input type="text" id="searchInput">` в ваш HTML-файл - это поле ввода для поискового запроса.
+3. Убедитесь, что ваша HTML-структура содержит элементы `<details>` с содержимым, которое нужно фильтровать.
+
+
+Этот улучшенный код обеспечивает более точный и удобный поиск внутри элементов `<details>`. Он обрабатывает случаи отсутствия `<div>` и эффективно скрывает только нерелевантные элементы внутри раздела `<details>`. Помните, что стилизация ( `element.style.display = 'none';` ) может быть изменена в соответствии с вашими потребностями.
