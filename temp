@@ -260,3 +260,90 @@ searchInput.addEventListener('input', () => {
 Ключевое изменение – это рекурсивная функция `processDetails`. Она возвращает `true`, если в данном элементе `details` или его потомках найдено совпадение. Это позволяет правильно обрабатывать вложенность. Функции `showRelevantContent` и `hideAllContent` также упрощены.
 
 Этот код должен корректно работать с любой глубиной вложенности `<details>`. Если вы всё ещё сталкиваетесь с проблемами, пожалуйста, предоставьте пример вашей HTML-структуры, чтобы я мог проверить код на конкретном примере.
+
+
+
+
+
+
+
+
+
+
+
+
+Вы абсолютно правы! Моя предыдущая попытка всё ещё содержала логическую ошибку. Проблема в том, что `showRelevantContent` и `hideAllContent` действуют только на *прямых* потомках `content`. Если у нас есть вложенные `details`, и только вложенный `details` содержит совпадение, то родительский `details` остаётся закрытым, потому что у него нет прямых потомков с видимым текстом.
+
+Чтобы решить эту проблему, необходимо гарантировать, что `details` открывается, если *любой* из его потомков содержит совпадение, и что *только* релевантный контент отображается. Для этого потребуется более радикальный подход, изменяющий способ обработки скрытия/показа элементов.
+
+Вот окончательная, исправленная версия кода. Она использует рекурсию, чтобы проверить все вложенные элементы и установить флаг `isMatch` для каждого `details`. Затем, после рекурсивного обхода, она устанавливает `details.open` и отображает/скрывает содержимое:
+
+
+function filterDetails(searchQuery) {
+  const lowerCaseQuery = searchQuery.toLowerCase();
+  const detailsElements = document.querySelectorAll('details');
+
+  detailsElements.forEach(details => {
+    details.open = false; // Изначально закрываем все
+    details.dataset.match = 'false'; // Добавляем флаг для отслеживания совпадений
+  });
+
+  detailsElements.forEach(details => processDetails(details, lowerCaseQuery));
+
+  detailsElements.forEach(details => {
+    if (details.dataset.match === 'true') {
+      details.open = true;
+      showRelevantContent(details, lowerCaseQuery);
+    } else {
+      hideAllContent(details);
+    }
+  });
+}
+
+function processDetails(details, searchQuery) {
+  const summary = details.querySelector('summary');
+  const content = details.querySelector('div') || details;
+  const summaryText = summary.textContent.toLowerCase();
+  const contentText = content.textContent.toLowerCase();
+
+  let isMatch = summaryText.includes(searchQuery) || contentText.includes(searchQuery);
+
+  const nestedDetails = content.querySelectorAll('details');
+  nestedDetails.forEach(nested => {
+    if (processDetails(nested, searchQuery)) {
+      isMatch = true;
+    }
+  });
+
+  details.dataset.match = isMatch ? 'true' : 'false';
+  return isMatch;
+}
+
+
+function showRelevantContent(details, searchQuery) {
+    const elements = details.querySelectorAll('*');
+    elements.forEach(element => {
+      element.style.display = element.textContent.toLowerCase().includes(searchQuery) ? 'block' : 'none';
+    });
+}
+
+function hideAllContent(details) {
+  const elements = details.querySelectorAll('*');
+  elements.forEach(element => {
+    element.style.display = 'none';
+  });
+}
+
+
+// Пример использования (остается без изменений):
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('input', () => {
+  const searchQuery = searchInput.value;
+  filterDetails(searchQuery);
+});
+
+
+В этом коде мы используем атрибут данных `dataset.match` для отслеживания, был ли найден матч в каждом элементе `details` или его потомках. Это позволяет правильно обрабатывать вложенность и открывать все необходимые элементы.
+
+
+Если проблема всё ещё присутствует, пожалуйста, предоставьте минимальный пример вашей HTML-структуры, чтобы я мог точно воспроизвести проблему и найти решение. Также укажите браузер, в котором вы тестируете код.
