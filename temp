@@ -347,3 +347,88 @@ searchInput.addEventListener('input', () => {
 
 
 Если проблема всё ещё присутствует, пожалуйста, предоставьте минимальный пример вашей HTML-структуры, чтобы я мог точно воспроизвести проблему и найти решение. Также укажите браузер, в котором вы тестируете код.
+
+
+
+
+
+
+
+
+
+
+Вы совершенно правы! В предыдущем коде была критическая ошибка в логике: `hideAllContent` скрывал *всё* внутри элемента `details`, включая сам `summary`, тем самым предотвращая открытие элемента.
+
+Вот исправленный код. Вместо того, чтобы скрывать все элементы, мы теперь скрываем только те, которые не соответствуют критерию поиска, и при этом сохраняем видимость `summary`:
+
+
+function filterDetails(searchQuery) {
+  const lowerCaseQuery = searchQuery.toLowerCase();
+  const detailsElements = document.querySelectorAll('details');
+
+  detailsElements.forEach(details => {
+    details.open = false;
+    details.dataset.match = 'false';
+  });
+
+  detailsElements.forEach(details => processDetails(details, lowerCaseQuery));
+
+  detailsElements.forEach(details => {
+    if (details.dataset.match === 'true') {
+      details.open = true;
+    }
+    showRelevantContent(details, lowerCaseQuery);
+  });
+}
+
+function processDetails(details, searchQuery) {
+  const summary = details.querySelector('summary');
+  const content = details.querySelector('div') || details;
+  const summaryText = summary.textContent.toLowerCase();
+  const contentText = content.textContent.toLowerCase();
+
+  let isMatch = summaryText.includes(searchQuery) || contentText.includes(searchQuery);
+
+  const nestedDetails = content.querySelectorAll('details');
+  nestedDetails.forEach(nested => {
+    if (processDetails(nested, searchQuery)) {
+      isMatch = true;
+    }
+  });
+
+  details.dataset.match = isMatch ? 'true' : 'false';
+  return isMatch;
+}
+
+
+function showRelevantContent(details, searchQuery) {
+  const elements = details.querySelectorAll('*');
+  elements.forEach(element => {
+    // Проверяем, не summary ли это
+    if (element.tagName !== 'SUMMARY'){
+        element.style.display = element.textContent.toLowerCase().includes(searchQuery) ? 'block' : 'none';
+    }
+  });
+}
+
+// hideAllContent больше не нужен, так как showRelevantContent теперь обрабатывает все случаи
+
+// Пример использования (остается без изменений):
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('input', () => {
+  const searchQuery = searchInput.value;
+  filterDetails(searchQuery);
+});
+
+
+
+Ключевое изменение - в `showRelevantContent` мы теперь проверяем `element.tagName !== 'SUMMARY'`. Это гарантирует, что `summary` всегда остаётся видимым, даже если не содержит поискового запроса. Функция `hideAllContent` удалена, так как её функциональность теперь покрывается `showRelevantContent`.
+
+
+Этот код должен работать корректно. Если проблемы остаются, пожалуйста, предоставьте:
+
+1. Пример HTML: Минимальный, но репрезентативный фрагмент вашего HTML-кода, демонстрирующий проблему. Чем меньше кода, тем легче будет определить причину.
+2. Браузер: Укажите, в каком браузере вы тестируете.
+
+
+С более конкретной информацией я смогу вам помочь эффективнее.
