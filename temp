@@ -179,3 +179,84 @@ searchInput.addEventListener('input', () => {
 
 
 Этот код должен корректно работать даже с очень глубоким вложенным деревом `<details>`. Он откроет все родительские элементы `<details>`, в которых содержится хотя бы один совпадающий элемент, и покажет только релевантный контент внутри этих элементов.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Вы правы, я снова допустил ошибку в логике. Предыдущий код всё ещё некорректно обрабатывал вложенность. Проблема в том, что мы проверяли вложенные `details` только внутри `content` текущего элемента, не учитывая, что совпадение может быть найдено глубже. Нужно использовать рекурсивный подход более тщательно.
+
+Вот окончательно исправленная версия, которая рекурсивно обрабатывает все вложенные `details` и корректно открывает и отображает только релевантные элементы:
+
+
+function filterDetails(searchQuery) {
+  const lowerCaseQuery = searchQuery.toLowerCase();
+  const detailsElements = document.querySelectorAll('details');
+
+  detailsElements.forEach(details => {
+    details.open = false; // Сначала закрываем все details
+    processDetails(details, lowerCaseQuery);
+  });
+}
+
+function processDetails(details, searchQuery) {
+  const summary = details.querySelector('summary');
+  const content = details.querySelector('div') || details;
+  const summaryText = summary.textContent.toLowerCase();
+  const contentText = content.textContent.toLowerCase();
+
+  let isMatch = summaryText.includes(searchQuery) || contentText.includes(searchQuery);
+
+  // Рекурсивно обрабатываем вложенные details
+  const nestedDetails = content.querySelectorAll('details');
+  nestedDetails.forEach(nested => {
+    if (processDetails(nested, searchQuery)) {
+      isMatch = true;
+    }
+  });
+
+  if (isMatch) {
+    details.open = true;
+    showRelevantContent(content, searchQuery);
+  } else {
+    hideAllContent(content);
+  }
+  return isMatch; // Возвращаем true, если в этом details или его потомках есть совпадение
+}
+
+
+function showRelevantContent(content, searchQuery) {
+    const elements = content.querySelectorAll('*');
+    elements.forEach(element => {
+        const text = element.textContent.toLowerCase();
+        element.style.display = text.includes(searchQuery) ? 'block' : 'none';
+    });
+}
+
+function hideAllContent(content) {
+    const elements = content.querySelectorAll('*');
+    elements.forEach(element => {
+        element.style.display = 'none';
+    });
+}
+
+
+// Пример использования (остается без изменений):
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('input', () => {
+  const searchQuery = searchInput.value;
+  filterDetails(searchQuery);
+});
+
+
+Ключевое изменение – это рекурсивная функция `processDetails`. Она возвращает `true`, если в данном элементе `details` или его потомках найдено совпадение. Это позволяет правильно обрабатывать вложенность. Функции `showRelevantContent` и `hideAllContent` также упрощены.
+
+Этот код должен корректно работать с любой глубиной вложенности `<details>`. Если вы всё ещё сталкиваетесь с проблемами, пожалуйста, предоставьте пример вашей HTML-структуры, чтобы я мог проверить код на конкретном примере.
