@@ -83,3 +83,99 @@ HTML структура (пример):
 
 
 Этот улучшенный код обеспечивает более точный и удобный поиск внутри элементов `<details>`. Он обрабатывает случаи отсутствия `<div>` и эффективно скрывает только нерелевантные элементы внутри раздела `<details>`. Помните, что стилизация ( `element.style.display = 'none';` ) может быть изменена в соответствии с вашими потребностями.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Вы правы, в предыдущем коде была ошибка: при глубоком дереве открывался только самый верхний родительский `<details>`. Проблема в том, что мы скрывали элементы внутри каждого `<details>`, не учитывая, находятся ли они внутри вложенных `<details>`.
+
+Вот исправленный код, который корректно обрабатывает глубокое вложенное дерево `<details>`:
+
+function filterDetails(searchQuery) {
+  const detailsElements = document.querySelectorAll('details');
+  const lowerCaseQuery = searchQuery.toLowerCase();
+
+  detailsElements.forEach(details => {
+    details.open = false; // Сначала закрываем все details
+
+    const summary = details.querySelector('summary');
+    const content = details.querySelector('div') || details; // Обработка случая без <div>
+
+    const summaryText = summary.textContent.toLowerCase();
+    const contentText = content.textContent.toLowerCase();
+
+    let isMatch = summaryText.includes(lowerCaseQuery) || contentText.includes(lowerCaseQuery);
+
+
+    // Рекурсивно проверяем вложенные details
+    const nestedDetails = content.querySelectorAll('details');
+    nestedDetails.forEach(nested => {
+      if (nested.querySelector('summary').textContent.toLowerCase().includes(lowerCaseQuery) ||
+          nested.querySelector('div')?.textContent.toLowerCase().includes(lowerCaseQuery)){
+          isMatch = true;
+      }
+    });
+
+    if (isMatch) {
+      details.open = true; // Открываем только если найден матч в любом из вложенных элементов
+      showRelevantContent(details, lowerCaseQuery);
+    } else {
+      hideAllContent(details); // Скрываем все содержимое, если нет совпадений
+    }
+  });
+}
+
+
+function showRelevantContent(details, searchQuery){
+    const content = details.querySelector('div') || details;
+    const elementsToHide = content.querySelectorAll('*');
+
+    elementsToHide.forEach(element => {
+        if (!element.textContent.toLowerCase().includes(searchQuery)){
+            element.style.display = 'none';
+        } else {
+            element.style.display = 'block';
+        }
+    })
+}
+
+
+function hideAllContent(details){
+    const content = details.querySelector('div') || details;
+    const elementsToHide = content.querySelectorAll('*');
+
+    elementsToHide.forEach(element => {
+        element.style.display = 'none';
+    })
+}
+
+
+// Пример использования (остается без изменений):
+const searchInput = document.getElementById('searchInput');
+
+searchInput.addEventListener('input', () => {
+  const searchQuery = searchInput.value;
+  filterDetails(searchQuery);
+});
+
+
+Основные изменения:
+
+* Рекурсивный поиск: Добавлена рекурсивная проверка (`nestedDetails.forEach`) вложенных элементов `<details>`. Теперь функция проверяет не только текущий `<details>`, но и все его дочерние элементы `<details>`.
+* `isMatch` флаг: Переменная `isMatch` теперь устанавливается в `true`, если совпадение найдено в любом из вложенных элементов.
+* Функции `showRelevantContent` и `hideAllContent`: Разделены функции для показа релевантного контента и скрытия нерелевантного, делая код чище и понятнее.
+
+
+Этот код должен корректно работать даже с очень глубоким вложенным деревом `<details>`. Он откроет все родительские элементы `<details>`, в которых содержится хотя бы один совпадающий элемент, и покажет только релевантный контент внутри этих элементов.
